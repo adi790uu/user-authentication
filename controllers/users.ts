@@ -16,20 +16,23 @@ const loginUserPayloadSchema = z.object({
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const payload = createUserPayloadSchema.parse(req.body)
-
     const data = await UserService.createUser(payload)
 
     if (data) {
       return res.status(201).json({ success: true, data: data })
     }
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return res.status(400).json({ success: false, msg: 'Invalid Inputs' })
+  } catch (error: any) {
+    if (error.message === 'User already exists') {
+      return res
+        .status(409)
+        .json({ success: false, msg: 'User already exists' })
+    } else if (error instanceof ZodError) {
+      return res.status(400).json({ success: false, msg: 'Invalid input data' })
+    } else {
+      return res
+        .status(500)
+        .json({ success: false, msg: 'Internal Server Error' })
     }
-
-    return res
-      .status(500)
-      .json({ success: false, msg: 'Internal Server Error' })
   }
 }
 
@@ -41,16 +44,18 @@ export const authUser = async (req: Request, res: Response) => {
     if (data) {
       return res.json({ success: true, msg: 'User logged in', data: data })
     }
-  } catch (error) {
-    if (error instanceof ZodError) {
+  } catch (error: any) {
+    if (error.message === 'user not found') {
+      return res.status(404).json({ success: false, msg: 'User not found' })
+    } else if (error instanceof ZodError) {
       return res
         .status(400)
         .json({ success: false, msg: 'Invalid credentials' })
+    } else {
+      return res
+        .status(500)
+        .json({ success: false, msg: 'Internal Server Error' })
     }
-
-    return res
-      .status(500)
-      .json({ success: false, msg: 'Internal Server Error' })
   }
 }
 

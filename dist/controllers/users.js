@@ -12,64 +12,85 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.authUser = exports.registerUser = void 0;
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+exports.authUser = exports.registerUser = void 0;
+const UserService_1 = __importDefault(require("../services/UserService"));
+const zod_1 = require("zod");
+const createUserPayloadSchema = zod_1.z.object({
+    name: zod_1.z.string(),
+    email: zod_1.z.string().email(),
+    password: zod_1.z.string(),
+});
+const loginUserPayloadSchema = zod_1.z.object({
+    email: zod_1.z.string().email(),
+    password: zod_1.z.string(),
+});
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, password } = req.body;
-    const salt = yield bcrypt_1.default.genSalt(10);
-    const hash = yield bcrypt_1.default.hash(password, salt);
-    const user = yield User.findOne({ username });
-    if (user) {
-        return res.json({ msg: 'User already exists' });
+    try {
+        const payload = createUserPayloadSchema.parse(req.body);
+        const data = yield UserService_1.default.createUser(payload);
+        if (data) {
+            return res.status(201).json({ success: true, data: data });
+        }
     }
-    const newUser = yield User.create({ username, password: hash });
-    const payload = {
-        id: newUser._id,
-    };
-    const token = jsonwebtoken_1.default.sign(payload, process.env.SECRET, { expiresIn: '24h' });
-    if (newUser) {
-        return res.json({ msg: 'User Created', token: token });
+    catch (error) {
+        if (error.message === 'User already exists') {
+            return res
+                .status(409)
+                .json({ success: false, msg: 'User already exists' });
+        }
+        else if (error instanceof zod_1.ZodError) {
+            return res.status(400).json({ success: false, msg: 'Invalid input data' });
+        }
+        else {
+            return res
+                .status(500)
+                .json({ success: false, msg: 'Internal Server Error' });
+        }
     }
-    return res.json({ msg: 'Some error occured' });
 });
 exports.registerUser = registerUser;
 const authUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, password } = req.body;
-    const user = yield User.findOne({ username });
-    if (user) {
-        const payload = {
-            id: user._id,
-        };
-        const token = jsonwebtoken_1.default.sign(payload, process.env.SECRET, { expiresIn: '24h' });
-        const isMatch = yield bcrypt_1.default.compare(password, user.password);
-        if (isMatch) {
-            return res.json({ msg: 'User logged in', token: token });
+    try {
+        const payload = loginUserPayloadSchema.parse(req.body);
+        const data = yield UserService_1.default.loginUser(payload);
+        if (data) {
+            return res.json({ success: true, msg: 'User logged in', data: data });
         }
-        return res.json({ msg: 'Invalid credentials' });
     }
-    res.json({ msg: 'User not found' });
+    catch (error) {
+        if (error.message === 'user not found') {
+            return res.status(404).json({ success: false, msg: 'User not found' });
+        }
+        else if (error instanceof zod_1.ZodError) {
+            return res
+                .status(400)
+                .json({ success: false, msg: 'Invalid credentials' });
+        }
+        else {
+            return res
+                .status(500)
+                .json({ success: false, msg: 'Internal Server Error' });
+        }
+    }
 });
 exports.authUser = authUser;
-const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.user;
-    const keyword = req.query.keyword;
-    let user;
-    if (keyword) {
-        user = yield User.findById(keyword)
-            .populate('likes')
-            .populate('favorites')
-            .populate('postsCreated');
-    }
-    else {
-        user = yield User.findById(userId)
-            .populate('likes')
-            .populate('favorites')
-            .populate('postsCreated');
-    }
-    if (user) {
-        return res.json({ msg: 'Success', user: user });
-    }
-    res.json({ msg: 'Failed' });
-});
-exports.getUser = getUser;
+// export const getUser = async (req: Request, res: Response) => {
+//   const userId = req.user
+//   const keyword = req.query.keyword
+//   let user
+//   if (keyword) {
+//     user = await User.findById(keyword)
+//       .populate('likes')
+//       .populate('favorites')
+//       .populate('postsCreated')
+//   } else {
+//     user = await User.findById(userId)
+//       .populate('likes')
+//       .populate('favorites')
+//       .populate('postsCreated')
+//   }
+//   if (user) {
+//     return res.json({ msg: 'Success', user: user })
+//   }
+//   res.json({ msg: 'Failed' })
+// }
