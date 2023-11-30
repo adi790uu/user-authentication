@@ -6,11 +6,12 @@ This is a Node.js TypeScript project for a backend assignment. It utilizes Expre
 
 Create a `.env` file in the root of your project with the following variables:
 
-````env
-**PostGres_URL**=
-**NODE_ENV**=
-**SECRET**=
-**PORT**=
+```env
+    **PostGres_URL**=
+    **NODE_ENV**=
+    **SECRET**=
+    **PORT**=
+```
 
 ## Getting Started
 
@@ -20,6 +21,8 @@ Follow these steps to set up and run the project on your local machine:4
 
    ```bash
    git clone https://github.com/adi790uu/BE-assignment.git
+   ```
+
 ````
 
 2. **Navigate to the project directory:**
@@ -61,3 +64,4 @@ npm test
 ```
 
 ```
+````
