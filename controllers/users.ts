@@ -1,17 +1,11 @@
 import { Request, Response } from 'express'
 import UserService from '../services/UserService'
-import { z, ZodError } from 'zod'
+import {
+  createUserPayloadSchema,
+  loginUserPayloadSchema,
+} from '../lib/zod/user'
 
-const createUserPayloadSchema = z.object({
-  username: z.string(),
-  email: z.string().email(),
-  password: z.string(),
-})
-
-const loginUserPayloadSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-})
+import { ZodError } from 'zod'
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
