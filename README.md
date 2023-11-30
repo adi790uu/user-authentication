@@ -7,10 +7,10 @@ This is a Node.js TypeScript project for a backend assignment. It utilizes Expre
 Create a `.env` file in the root of your project with the following variables:
 
 ```env
-    Postgres_URL=
-    NODE_ENV=
-    SECRET=
-    PORT=
+Postgres_URL=
+NODE_ENV=
+SECRET=
+PORT=
 ```
 
 ## Getting Started
@@ -87,9 +87,9 @@ I have tried custom rate limiting using redis as well as limiting using express-
 express-rate-limit library.
 
 ```
-    windowMs: Your time window in ms,
-    max: maximun requests allowed within the time window,
-    message: <Your custom message>,
-    standardHeaders: true,
-    legacyHeaders: false,
+windowMs: Your time window in ms,
+max: maximun requests allowed within the time window,
+message: <Your custom message>,
+standardHeaders: true,
+legacyHeaders: false,
 ```
