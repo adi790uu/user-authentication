@@ -111,8 +111,8 @@ express-rate-limit library.
 
 ```
 windowMs: Your time window in ms,
-max: maximun requests allowed within the time window,
-message: <Your custom message>,
+max: maximun requests allowed within the time window, In the code it is 10 requests/hour
+handler: handles the message sent and staus code when limit exceeds,
 standardHeaders: true,
 legacyHeaders: false,
 ```
