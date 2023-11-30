@@ -23,8 +23,6 @@ Follow these steps to set up and run the project on your local machine:4
    git clone https://github.com/adi790uu/BE-assignment.git
    ```
 
-````
-
 2. **Navigate to the project directory:**
 
    ```bash
@@ -64,4 +62,7 @@ npm test
 ```
 
 ```
-````
+
+```
+
+```
