@@ -1,7 +1,6 @@
 import { db } from '../lib/db'
 import { createHmac, randomBytes } from 'node:crypto'
 import JWT from 'jsonwebtoken'
-const SECRET = 'TRabdom2ejed'
 
 export interface CreateUserPayload {
   username: string
@@ -50,7 +49,7 @@ class UserService {
     })
 
     if (newUser) {
-      const token = JWT.sign({ id: newUser.id, email: newUser.email }, SECRET)
+      const token = JWT.sign({ id: newUser.id }, process.env.SECRET as string)
       const data = {
         token: token,
       }
@@ -60,6 +59,10 @@ class UserService {
 
   private static getUserByEmail(email: string) {
     return db.user.findUnique({ where: { email } })
+  }
+
+  public static getUserById(id: string) {
+    return db.user.findUnique({ where: { id: parseInt(id, 10) } })
   }
 
   private static getUserByUsername(username: string) {
@@ -78,7 +81,7 @@ class UserService {
     if (usersHashPassword !== user.password)
       throw new Error('Incorrect Password')
 
-    const token = JWT.sign({ id: user.id, email: user.email }, SECRET)
+    const token = JWT.sign({ id: user.id }, process.env.SECRET as string)
     const data = {
       token: token,
     }
@@ -86,7 +89,7 @@ class UserService {
   }
 
   public static decodeJWTToken(token: string) {
-    return JWT.verify(token, SECRET)
+    return JWT.verify(token, process.env.SECRET as string)
   }
 }
 

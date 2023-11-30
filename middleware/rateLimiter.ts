@@ -46,9 +46,10 @@ export const RateLimiter = async (
       console.error('Redis client does not exist!')
       return next()
     }
-
     const ip = req.ip as string
     const data = await getRequestLog(ip)
+
+    console.log(data)
 
     if (!data) {
       const newRecord = [

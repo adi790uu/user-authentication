@@ -59,26 +59,23 @@ export const authUser = async (req: Request, res: Response) => {
   }
 }
 
-// export const getUser = async (req: Request, res: Response) => {
-//   const userId = req.user
-//   const keyword = req.query.keyword
-//   let user
+export const getLoggedUserDetails = async (req: Request, res: Response) => {
+  //@ts-ignore
+  const id: string = req.user
 
-//   if (keyword) {
-//     user = await User.findById(keyword)
-//       .populate('likes')
-//       .populate('favorites')
-//       .populate('postsCreated')
-//   } else {
-//     user = await User.findById(userId)
-//       .populate('likes')
-//       .populate('favorites')
-//       .populate('postsCreated')
-//   }
+  try {
+    const user = await UserService.getUserById(id)
 
-//   if (user) {
-//     return res.json({ msg: 'Success', user: user })
-//   }
-
-//   res.json({ msg: 'Failed' })
-// }
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+    const data = {
+      username: user.username,
+      email: user.email,
+    }
+    res.status(200).json({ msg: 'Success', data: data })
+  } catch (error) {
+    console.error('Error fetching user details:', error)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+}
