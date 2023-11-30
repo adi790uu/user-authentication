@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles",
-    "start": "tsc && nodemon ./dist/index"
+    "start": "tsc && node ./dist/index"
   },
   "keywords": [],
   "author": "",
