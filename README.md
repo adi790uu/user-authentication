@@ -2,6 +2,12 @@
 
 This is a Node.js TypeScript project for a backend assignment. It utilizes Express for handling HTTP requests, TypeScript for type-safe coding, JSON Web Token (jsonwebtoken) for authentication, and Jest for unit testing.
 
+# Endpoints
+
+/api/v1/users/register --> registration endpoint
+/api/v1/users/login --> login endpoint
+/api/v1/users/getUser --> get user info based on token validation
+
 ## Environment Variables
 
 Create a `.env` file in the root of your project with the following variables:
