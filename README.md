@@ -10,6 +10,20 @@ This is a Node.js TypeScript project for a backend assignment. It utilizes Expre
 /api/v1/users/getUser --> get user info based on token validation
 ```
 
+## Middlewares
+
+### 1. **isAuth**
+
+- This middleware extracts the token from the request object and utilizes it to retrieve the user ID.
+
+### 2. **redisRateLimiter**
+
+- This middleware employs Redis for the implementation of an API limiting mechanism.
+
+### 3. **xss**
+
+- This middleware safeguards the site against cross-site scripting attacks by sanitizing the request object.
+
 ## Environment Variables
 
 Create a `.env` file in the root of your project with the following variables:
