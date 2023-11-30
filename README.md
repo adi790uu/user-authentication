@@ -15,19 +15,22 @@ Create a `.env` file in the root of your project with the following variables:
 
 ## Getting Started
 
-Follow these steps to set up and run the project on your local machine:4
+Follow these steps to set up and run the project on your local machine:
 
 1. **Clone the repository:**
 
    ```bash
    git clone https://github.com/adi790uu/BE-assignment.git
+
    ```
+
+````
 
 2. **Navigate to the project directory:**
 
    ```bash
    cd BE-assignment
-   ```
+````
 
 3. **Install dependencies:**
 
@@ -57,12 +60,4 @@ Jest is used for writing and running unit tests. To execute the tests, run the f
 
 ```bash
 npm test
-```
-
-```
-
-```
-
-```
-
 ```
