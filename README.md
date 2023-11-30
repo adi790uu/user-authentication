@@ -89,6 +89,7 @@ You can also run the application using Docker. Make sure you have Docker install
 - **TypeScript:** A superset of JavaScript that adds static types to the language.
 - **JSON Web Token (jsonwebtoken):** A compact, URL-safe means of representing claims to be transferred between two parties.
 - **Jest:** A delightful JavaScript Testing Framework with a focus on simplicity.
+- **Zod:** Zod is a TypeScript-first schema declaration and validation library.
 
 ## Unit Testing
 
@@ -100,7 +101,7 @@ npm test
 
 tests --->
 
-1. **Registartion Endpoint tests**
+1. **Registration Endpoint tests**
 2. **Login Endpoint tests**
 
 ## Rate Limiting
