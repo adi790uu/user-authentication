@@ -3,7 +3,7 @@ import cors from 'cors'
 import sanitizeRequestBody from './middleware/xss'
 import { RateLimiter } from './middleware/rateLimiter'
 
-const app = express()
+export const app = express()
 
 app.use(cors())
 app.use(sanitizeRequestBody)
@@ -16,8 +16,9 @@ app.get('/test', RateLimiter, (req, res) => {
   res.json({ msg: 'test' })
 })
 
-const PORT = process.env.PORT || 5000
-
-app.listen(PORT, () => {
-  console.log(`Server running on port: ${PORT}`)
-})
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 5000
+  app.listen(PORT, () => {
+    console.log(`Server running on port: ${PORT}`)
+  })
+}

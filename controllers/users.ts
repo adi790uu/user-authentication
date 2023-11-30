@@ -3,7 +3,7 @@ import UserService from '../services/UserService'
 import { z, ZodError } from 'zod'
 
 const createUserPayloadSchema = z.object({
-  name: z.string(),
+  username: z.string(),
   email: z.string().email(),
   password: z.string(),
 })
@@ -22,10 +22,8 @@ export const registerUser = async (req: Request, res: Response) => {
       return res.status(201).json({ success: true, data: data })
     }
   } catch (error: any) {
-    if (error.message === 'User already exists') {
-      return res
-        .status(409)
-        .json({ success: false, msg: 'User already exists' })
+    if (error.message === 'User already exists' || 'Username already in use!') {
+      return res.status(409).json({ success: false, msg: error.message })
     } else if (error instanceof ZodError) {
       return res.status(400).json({ success: false, msg: 'Invalid input data' })
     } else {
@@ -42,7 +40,9 @@ export const authUser = async (req: Request, res: Response) => {
     const data = await UserService.loginUser(payload)
 
     if (data) {
-      return res.json({ success: true, msg: 'User logged in', data: data })
+      return res
+        .status(200)
+        .json({ success: true, msg: 'User logged in', data: data })
     }
   } catch (error: any) {
     if (error.message === 'user not found') {

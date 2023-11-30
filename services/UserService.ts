@@ -4,7 +4,7 @@ import JWT from 'jsonwebtoken'
 const SECRET = 'TRabdom2ejed'
 
 export interface CreateUserPayload {
-  name: string
+  username: string
   email: string
   password: string
 }
@@ -23,12 +23,18 @@ class UserService {
   }
 
   public static async createUser(payload: CreateUserPayload) {
-    const { name, email, password } = payload
+    const { username, email, password } = payload
 
     const existingUser = await UserService.getUserByEmail(email)
 
     if (existingUser) {
       throw new Error('User already exists')
+    }
+
+    const userNameNotAvailable = await UserService.getUserByUsername(username)
+
+    if (userNameNotAvailable) {
+      throw new Error('Username already in use!')
     }
 
     const salt = randomBytes(32).toString('hex')
@@ -37,7 +43,7 @@ class UserService {
     const newUser = await db.user.create({
       data: {
         email,
-        name,
+        username,
         salt,
         password: hashedPassword,
       },
@@ -46,7 +52,6 @@ class UserService {
     if (newUser) {
       const token = JWT.sign({ id: newUser.id, email: newUser.email }, SECRET)
       const data = {
-        user: newUser,
         token: token,
       }
       return data
@@ -55,6 +60,10 @@ class UserService {
 
   private static getUserByEmail(email: string) {
     return db.user.findUnique({ where: { email } })
+  }
+
+  private static getUserByUsername(username: string) {
+    return db.user.findUnique({ where: { username } })
   }
 
   public static async loginUser(payload: LoginUserPayload) {
@@ -71,7 +80,6 @@ class UserService {
 
     const token = JWT.sign({ id: user.id, email: user.email }, SECRET)
     const data = {
-      user: user,
       token: token,
     }
     return data

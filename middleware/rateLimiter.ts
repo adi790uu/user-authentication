@@ -2,8 +2,14 @@ import moment from 'moment'
 import { Redis } from 'ioredis'
 import { Request, Response, NextFunction } from 'express'
 
-const redisClient = new Redis()
-redisClient.on('error', (err: any) => console.error('Redis Client Error', err))
+let redisClient: Redis | null = null
+
+if (process.env.NODE_ENV !== 'test') {
+  redisClient = new Redis()
+  redisClient.on('error', (err: any) =>
+    console.error('Redis Client Error', err),
+  )
+}
 
 const WINDOW_SIZE_IN_HOURS = 1
 const WINDOW_LOG_INTERVAL_IN_HOURS = 1
@@ -12,11 +18,21 @@ const MAX_WINDOW_REQUEST_COUNT = 5
 const getCurrentTimestampInSeconds = (): number => moment().unix()
 
 const getRequestLog = async (ip: string): Promise<Array<any> | null> => {
+  if (!redisClient) {
+    console.error('Redis client does not exist!')
+    return null
+  }
+
   const record = await redisClient.get(ip)
   return record ? JSON.parse(record) : null
 }
 
 const setRequestLog = async (ip: string, data: any): Promise<void> => {
+  if (!redisClient) {
+    console.error('Redis client does not exist!')
+    return
+  }
+
   await redisClient.set(ip, JSON.stringify(data))
 }
 
@@ -26,6 +42,11 @@ export const RateLimiter = async (
   next: NextFunction,
 ) => {
   try {
+    if (!redisClient) {
+      console.error('Redis client does not exist!')
+      return next()
+    }
+
     const ip = req.ip as string
     const data = await getRequestLog(ip)
 
@@ -84,3 +105,5 @@ export const RateLimiter = async (
     next()
   }
 }
+
+export default redisClient
