@@ -2,7 +2,7 @@
 
 This is a Node.js TypeScript project for a backend assignment. It utilizes Express for handling HTTP requests, TypeScript for type-safe coding, JSON Web Token (jsonwebtoken) for authentication, and Jest for unit testing.
 
-# ApiEndpoints
+# Api-Endpoints
 
 ```
 /api/v1/users/register --> registration endpoint
